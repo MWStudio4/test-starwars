@@ -16,12 +16,12 @@ export class PersonService {
     ) { }
 
     @Cache(userCache, { ttl: Number(process.env.CACHE_TTL) })
-    public async find(page: number = 1): Promise<Person[]> {
+    public async find(page: number = 1): Promise<{ count: number, persons: Person[] }> {
 
         this.log.info('Find all Persons');
 
         const result = await swapi.get(`people?page=${page}`);
-        const { results = [] } = result;
+        const { results = [], count } = result;
 
         const persons = results.map(item => {
             const { pathname } = new URL(item.url);
@@ -31,7 +31,9 @@ export class PersonService {
             return new Person(id, item.name, item.birth_year, item.url);
         });
 
-        return persons.sort((a, b) => a.age - b.age);
+        persons.sort((a, b) => a.age - b.age);
+
+        return { count, persons }
 
     }
 

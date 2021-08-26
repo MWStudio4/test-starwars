@@ -41,7 +41,7 @@ export class PersonController {
 
     @Get()
     @ResponseSchema(Person, { isArray: true })
-    public find(@QueryParam("page") page: number): Promise<Person[]> {
+    public find(@QueryParam("page") page: number): Promise<{ count: number, persons: Person[] }> {
         return this.PersonService.find(page);
     }
 
