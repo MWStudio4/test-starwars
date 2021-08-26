@@ -35,9 +35,11 @@ export class PersonService {
 
     }
 
-    public async findOne(id: string): Promise<Person | undefined> {
-        this.log.info('Find all Persons');
-        return undefined;
+    @Cache(userCache, { ttl: Number(process.env.CACHE_TTL) })
+    public async findOne(id: number): Promise<Object | undefined> {
+        this.log.info(`Find Person with id=${id}`);
+        const res = await swapi.getPerson(id);
+        return res;
     }
 
 }

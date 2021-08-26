@@ -6,6 +6,31 @@ import { PersonNotFoundError } from '../errors/PersonNotFoundError';
 import { Person } from '../models/Person';
 import { PersonService } from '../services/PersonService';
 
+export class PersonProfileResponse {
+    public name: string;
+    public birth_year: string;
+    public height: string;
+    public mass: string;
+    public hair_color: string;
+    public skin_color: string;
+    public eye_color: string;
+    public gender: string;
+    public homeworld: string;
+
+    constructor(data) {
+        this.name = data.name;
+        this.birth_year = data.birth_year;
+        this.height = data.height;
+        this.mass = data.mass;
+        this.hair_color = data.hair_color;
+        this.skin_color = data.skin_color;
+        this.eye_color = data.eye_color;
+        this.gender = data.gender;
+        this.homeworld = data.homeworld;
+    }
+}
+
+
 // @Authorized()
 @JsonController('/persons')
 export class PersonController {
@@ -22,8 +47,8 @@ export class PersonController {
 
     @Get('/:id')
     @OnUndefined(PersonNotFoundError)
-    @ResponseSchema(Person)
-    public one(@Param('id') id: string): Promise<Person | undefined> {
-        return this.PersonService.findOne(id);
+    public async one(@Param('id') id: number): Promise<Object | undefined> {
+        const person = await this.PersonService.findOne(id);
+        return new PersonProfileResponse(person);
     }
 }
